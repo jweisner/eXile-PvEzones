@@ -32,6 +32,8 @@ waitUntil { uiSleep 0.5; !isNull(findDisplay 46); };
 sleep 10;
 systemChat "Loading: PvE Zones";
 
+ExilePlayerInPvEzone = false;
+
 ExilePvEzoneMarkerPositions = [];
 ExilePvEzoneMarkerPositionsAndSize = [];
 {
