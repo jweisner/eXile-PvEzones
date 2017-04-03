@@ -1,11 +1,14 @@
+
+//diag_log format ["DEBUG isInPvEzone: ExilePvEzoneAreas=%1", count(ExilePvEzoneAreas)];
 private["_position","_result"];
 _position = _this;
 _result = false;
 {
-	if (((_x select 0) distance2D _position) < (_x select 1)) exitWith
+    //Diag_log format ["DEBUG isInPvEzone: %1", _x];
+	if (player inArea _x) exitWith
 	{
 		_result = true;
 	};
 }
-forEach ExilePvEzoneMarkerPositionsAndSize;
+forEach ExilePvEzoneAreas;
 _result

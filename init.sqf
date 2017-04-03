@@ -8,39 +8,28 @@ if (!hasInterface || isServer) exitWith {
 	Diag_log "Initializing PvE Zones!";
 };
 
-private ['_code', '_function', '_file'];
-
-{
-    _code = '';
-    _function = _x select 0;
-    _file = _x select 1;
-
-    _code = compileFinal (preprocessFileLineNumbers _file);
+// Globals
+ExilePvEzoneAreas = [];
+ExilePlayerInPvEzone = false;
 
 if (hasInterface) then {
     [] execVM "Custom\PvEzones\compiles.sqf";
 
-waitUntil { uiSleep 0.5; !isNull(findDisplay 46); };
-sleep 10;
-systemChat "Loading: PvE Zones";
+    waitUntil { uiSleep 0.5; !isNull(findDisplay 46); };
+    systemChat "Loading: PvE Zones";
 
-ExilePlayerInPvEzone = false;
-
-ExilePvEzoneMarkerPositions = [];
-ExilePvEzoneMarkerPositionsAndSize = [];
-{
-    switch (getMarkerType _x) do 
     {
-            case "ExilePvEzone": 
+        switch (getMarkerType _x) do 
         {
-            ExilePvEzoneMarkerPositions pushBack (getMarkerPos _x);
-            ExilePvEzoneMarkerPositionsAndSize pushBack 
-            [
-                getMarkerPos _x, 
-                (getMarkerSize _x) select 0
-            ];
+                case "ExilePvEzone": 
+            {
+                ExilePvEzoneAreas pushBack (_x);
+            };
         };
-    };
-} forEach allMapMarkers;
+    } forEach allMapMarkers;
 
-ExileClientPvEzoneUpdateThreadHandle = [1, ExileClient_object_player_thread_PvEzone, [], true] call ExileClient_system_thread_addtask;
+    //diag_log format ["DEBUG PvEzones: found %1 ExilePvEzone markers", (count ExilePvEzoneAreas)];
+
+    ExileClientPvEzoneUpdateThreadHandle = [1, ExileClient_object_player_thread_PvEzone, [], true] call ExileClient_system_thread_addtask;
+    [5, ExileClient_object_player_PvEzone_checkPvEzone, [], true] call ExileClient_system_thread_addtask;
+};
